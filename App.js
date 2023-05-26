@@ -6,7 +6,6 @@ import { HomeScreen } from './Pages/Home'
 import { SettingsScreen } from './Pages/Settings'
 import { DiaryScreen } from './Pages/Diary'
 import getSpotifyToken from './assets/getSpotifyToken';
-//import TrackPlayer from 'react-native-track-player'; // Import the TrackPlayer module
 import React, { useEffect, useState } from 'react';
 
 //Create Tab Navigator
@@ -17,7 +16,7 @@ export default function App() {
   const theme = {
     ...DefaultTheme,
     colors: {
-      secondaryContainer: "#dee0e7",
+      secondaryContainer: '#dee0e7',
       primary: "#273043",
       secondary: "#9197AE"
     },
@@ -30,13 +29,6 @@ export default function App() {
 
   useEffect(() => {
     fetchToken();
-    //TrackPlayer.setupPlayer().then(() => {
-    //  console.log('TrackPlayer is ready');
-    //});
-    //return () => {
-    // Clean up resources when the component unmounts
-    //TrackPlayer.destroy();
-    //};
   }, []);
 
   return (
