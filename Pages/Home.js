@@ -1,15 +1,40 @@
-import { SafeAreaView, FlatList } from 'react-native';
-import { TextInput, useTheme } from 'react-native-paper';
+import { SafeAreaView, FlatList, View, StyleSheet } from 'react-native';
+import { TextInput, Modal, Portal, Provider, useTheme } from 'react-native-paper';
 import React from 'react';
-import querySpotify from '../assets/querySpotify'
-import { SongComponent } from '../assets/songComponent'
-import TrackPlayer from 'react-native-track-player'; // Import the TrackPlayer module
+import querySpotify from '../assets/querySpotify';
+import { SongComponent } from '../assets/songComponent';
+import TrackPlayer from 'react-native-track-player';
+import { SongModal } from '../assets/songModal';
+
 
 const HomeScreen = ({ navigation, route, spotifyToken }) => {
   const [songQuery, setSongQuery] = React.useState("");
   const [songs, setSongs] = React.useState([]);
   const [selectedSong, setSelectedSong] = React.useState(null);
+  const [showPopup, setShowPopup] = React.useState(false);
   const theme = useTheme();
+
+  const styles = StyleSheet.create({
+    modalContainer: {
+      flex: 1,
+      shadowColor: "#273043",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0,
+      shadowRadius: 4,
+    },
+    modalView: {
+      //flex: 1,
+      backgroundColor: theme.colors.secondaryContainer,
+      backgroundColor: 'white',
+      height: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+      //margin: 10,
+    },
+    flatListContainer: {
+      flex: 0.8,
+    },
+  });
 
   const handleSongQueryChange = async (text) => {
     console.log("handleSongQueryChange called")
@@ -23,7 +48,7 @@ const HomeScreen = ({ navigation, route, spotifyToken }) => {
     }
   };
 
-  const handleSongPress = async (song, isPlaying) => {
+  const handlePlayPreview = async (song, isPlaying) => {
     console.log("handleSongPress called on " + song.name)
     if (isPlaying) {
       //if song is playing
@@ -43,27 +68,53 @@ const HomeScreen = ({ navigation, route, spotifyToken }) => {
     }
   };
 
+  const handlePopup = (song, isPlaying) => {
+    if (!isPlaying) {
+      //handlePlayPreview(song, isPlaying);
+      setSelectedSong(song)
+    }
+    togglePopup()
+  };
+
+  const togglePopup = () => {
+    setShowPopup(!showPopup);
+  };
+
+
   return (
     <SafeAreaView style={{ flex: 1, marginHorizontal: 20 }}>
       <TextInput
         style={{ marginHorizontal: 10 }}
         label="Song"
-        //placeholder="song"
         outlineColor={theme.colors.secondary}
         value={songQuery}
         mode='outlined'
         onChangeText={handleSongQueryChange}
       />
-      <FlatList
-        data={songs}
-        renderItem={({ item, index }) => (
-          <SongComponent
-            song={item}
-            isPlaying={selectedSong?.id === item.id ?? false}
-            onPress={handleSongPress}
-          />
-        )}
-      />
+      <View style={styles.flatListContainer}>
+        <FlatList
+          data={songs}
+          renderItem={({ item, index }) => (
+            <SongComponent
+              song={item}
+              isPlaying={selectedSong?.id === item.id ?? false}
+              handlePlayPreview={handlePlayPreview}
+              handlePopup={handlePopup}
+            />
+          )}
+        />
+      </View>
+      {selectedSong && showPopup && (
+        <Portal.Host>
+          <Portal>
+            <Modal visible={showPopup} onDismiss={togglePopup} contentContainerStyle={styles.modalContainer}>
+              <View style={styles.modalView}>
+                <SongModal song={selectedSong} />
+              </View>
+            </Modal>
+          </Portal>
+        </Portal.Host>
+      )}
     </SafeAreaView>
   );
 }

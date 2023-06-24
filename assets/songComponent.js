@@ -1,14 +1,14 @@
-import { Text, View, Pressable, Image, Animated, Easing, StyleSheet } from 'react-native';
-import { Modal } from 'react-native-paper';
+import { Text, View, Pressable, Image, Animated, Modal, StyleSheet } from 'react-native';
+//import { Modal } from 'react-native-paper';
 import MarqueeText from 'react-native-marquee';
 import React, { useRef, useEffect, useState } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const SongComponent = React.memo(({ song, isPlaying, onPress }) => {
+const SongComponent = React.memo(({ song, isPlaying, handlePlayPreview, handlePopup }) => {
   const artistNames = song['artists'].map(artist => artist.name);
-  const artistNamesString = artistNames.join(", ");
+  const artistNamesString = artistNames.join(" · ");
   const artworkUrl = song['album']['images'][1]['url']
-  const [showPopup, setShowPopup] = useState(false);
+  //const [showPopup, setShowPopup] = useState(false);
   const shadowOpacityValue = useRef(new Animated.Value(0)).current;
   const buttonScaleValue = useRef(new Animated.Value(1)).current;
   const pauseOpacityValue = useRef(new Animated.Value(0)).current;
@@ -72,8 +72,12 @@ const SongComponent = React.memo(({ song, isPlaying, onPress }) => {
     ]).start();
   };
 
-  const handlePlayPreview = async () => {
-    onPress(song, isPlaying);
+  const handlePlayPress = async () => {
+    handlePlayPreview(song, isPlaying);
+  };
+
+  const handleSongPress = () => {
+    handlePopup(song, isPlaying);
   };
 
   const shadowOpacity = shadowOpacityValue.interpolate({
@@ -96,14 +100,9 @@ const SongComponent = React.memo(({ song, isPlaying, onPress }) => {
     outputRange: [0, 1],
   });
 
-  const togglePopup = () => {
-    console.log("pressed")
-    setShowPopup(!showPopup);
-  };
-
   return (
     <View style={[styles.container]}>
-      <Pressable style={styles.songInfoParent} onPress={togglePopup}>
+      <Pressable style={styles.songInfoParent} onPress={handleSongPress}>
         <Animated.View style={[styles.imageContainer, { shadowOpacity: shadowOpacity }]}>
           <Image source={{ uri: artworkUrl }} style={styles.image} />
         </Animated.View>
@@ -120,7 +119,7 @@ const SongComponent = React.memo(({ song, isPlaying, onPress }) => {
           <Text style={styles.artistName}>{artistNamesString}</Text>
         </View>
       </Pressable>
-      <Pressable onPress={handlePlayPreview}>
+      <Pressable onPress={handlePlayPress}>
         <Animated.View
           style={[styles.playButton, { transform: [{ scale: buttonScale }] }]}
         >
@@ -140,8 +139,6 @@ const SongComponent = React.memo(({ song, isPlaying, onPress }) => {
           </Animated.View>
         </Animated.View>
       </Pressable>
-      <Modal visible={showPopup}>
-      </Modal>
     </View>
   );
 });
@@ -205,11 +202,7 @@ const styles = StyleSheet.create({
   },
   artistName: {
     fontSize: 14,
-  },
-  popupContainer: {
-    backgroundColor: 'black',
-    padding: 20
-  },
+  }
 });
 
 export { SongComponent };
