@@ -7,7 +7,7 @@ import TrackPlayer from 'react-native-track-player';
 import { SongModal } from '../assets/songModal';
 
 
-const HomeScreen = ({ navigation, route, spotifyToken }) => {
+const HomeScreen = ({ navigation, route, spotifyToken, setSwiperScreen, setSelectedSongData }) => {
   const [songQuery, setSongQuery] = React.useState("");
   const [songs, setSongs] = React.useState([]);
   const [selectedSong, setSelectedSong] = React.useState(null);
@@ -37,7 +37,6 @@ const HomeScreen = ({ navigation, route, spotifyToken }) => {
   });
 
   const handleSongQueryChange = async (text) => {
-    console.log("handleSongQueryChange called")
     setSongQuery(text);
     if (text.length > 2) {
       const newSongs = await querySpotify(text, spotifyToken);
@@ -49,7 +48,6 @@ const HomeScreen = ({ navigation, route, spotifyToken }) => {
   };
 
   const handlePlayPreview = async (song, isPlaying) => {
-    console.log("handleSongPress called on " + song.name)
     if (isPlaying) {
       //if song is playing
       await TrackPlayer.pause();
@@ -109,7 +107,12 @@ const HomeScreen = ({ navigation, route, spotifyToken }) => {
           <Portal>
             <Modal visible={showPopup} onDismiss={togglePopup} contentContainerStyle={styles.modalContainer}>
               <View style={styles.modalView}>
-                <SongModal song={selectedSong} />
+                <SongModal
+                  song={selectedSong}
+                  token={spotifyToken}
+                  setSwiperScreen={setSwiperScreen}
+                  setSelectedSongData={setSelectedSongData}
+                />
               </View>
             </Modal>
           </Portal>

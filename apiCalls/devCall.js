@@ -1,13 +1,14 @@
 import axios from 'axios'
 const backendConnection = require('../config');
 
-async function devCall() {
+async function devCall(spotifyToken, songId) {
   try {
     const params = {
       userId: "1",
-      seedSongId: '11111',
+      song: songId,
+      token: spotifyToken
     };
-    const response = await axios.post(`${backendConnection}/devRoute`, params, {
+    const response = await axios.post(`${backendConnection}/createModel`, params, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -16,7 +17,7 @@ async function devCall() {
     return responseData
   }
   catch (error) {
-    console.log("Error on DevCall")
+    console.log("Error on DevCall: ", error)
   }
 }
 

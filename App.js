@@ -3,6 +3,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Provider as PaperProvider, MD3LightTheme as DefaultTheme, } from 'react-native-paper';
 import { HomeScreen } from './Pages/Home'
+import { SwiperScreen } from './Pages/SwiperScreen'
 import { SettingsScreen } from './Pages/Settings'
 import { DiaryScreen } from './Pages/Diary'
 import getSpotifyToken from './assets/getSpotifyToken';
@@ -13,6 +14,8 @@ const Tab = createMaterialBottomTabNavigator();
 
 export default function App() {
   const [spotifyToken, setSpotifyToken] = useState('');
+  const [swiperScreen, setSwiperScreen] = useState(false);
+  const [selectedSongData, setSelectedSongData] = useState('');
   const theme = {
     ...DefaultTheme,
     colors: {
@@ -59,13 +62,37 @@ export default function App() {
             },
             tabBarLabel: false,
           })}>
-          <Tab.Screen name="Home">
-            {(props) => <HomeScreen {...props} spotifyToken={spotifyToken} />}
-          </Tab.Screen>
-          <Tab.Screen name="Diary" initialParams={{ spotifyToken: spotifyToken }} component={DiaryScreen} />
+          {swiperScreen ? (
+            <Tab.Screen name="Home">
+              {(props) => (
+                <SwiperScreen
+                  {...props}
+                  onClose={setSwiperScreen}
+                  selectedSong={selectedSongData}
+                />
+              )}
+            </Tab.Screen>
+          ) : (
+            <Tab.Screen name="Home">
+              {(props) => (
+                <HomeScreen
+                  {...props}
+                  spotifyToken={spotifyToken}
+                  setSwiperScreen={setSwiperScreen}
+                  setSelectedSongData={setSelectedSongData}
+                />
+              )}
+            </Tab.Screen>
+          )}
           <Tab.Screen name="Settings" initialParams={{ spotifyToken: spotifyToken }} component={SettingsScreen} />
         </Tab.Navigator>
       </NavigationContainer>
     </PaperProvider>
   );
 }
+
+/*
+<Tab.Screen name="Diary">
+  {(props) => <DiaryScreen {...props} spotifyToken={spotifyToken} />}
+</Tab.Screen>
+*/

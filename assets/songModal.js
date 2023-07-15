@@ -1,13 +1,16 @@
 import { Text, View, Image, StyleSheet } from 'react-native';
-import { Modal } from 'react-native-paper';
+import { Modal, Button } from 'react-native-paper';
 import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { devCall } from '../apiCalls/devCall';
 
-const SongModal = ({ song }) => {
+const SongModal = ({ song, token, setSwiperScreen, setSelectedSongData }) => {
   const artworkUrl = song['album']['images'][1]['url']
-  //console.log(artworkUrl)
-  //console.log(song)
-
+  const handleButton = async (token, song) => {
+    const newSong = await devCall(token, song)
+    setSelectedSongData(JSON.stringify(newSong));
+    setSwiperScreen(true);
+  };
   return (
     //<Modal.Content
     <View>
@@ -15,6 +18,9 @@ const SongModal = ({ song }) => {
         <Image source={{ uri: artworkUrl }} style={styles.image} />
       </View>
       <Text>{song.name}</Text>
+      <Button mode="contained" onPress={() => handleButton(token, song)}>
+        <Text>POST</Text>
+      </Button>
     </View>
     //</Modal.Content>
   );
@@ -82,4 +88,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
   }
 });
-//        <Image source={{ uri: artworkUrl }} style={styles.image} />
+
+//      <Text>{song.name}</Text>
