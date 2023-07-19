@@ -2,12 +2,12 @@ import { Text, View, Image, StyleSheet } from 'react-native';
 import { Modal, Button } from 'react-native-paper';
 import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { devCall } from '../apiCalls/devCall';
+import { newModel } from '../apiCalls/newModel';
 
 const SongModal = ({ song, token, setSwiperScreen, setSelectedSongData }) => {
   const artworkUrl = song['album']['images'][1]['url']
   const handleButton = async (token, song) => {
-    const newSong = await devCall(token, song)
+    const newSong = await newModel(token, song)
     setSelectedSongData(JSON.stringify(newSong));
     setSwiperScreen(true);
   };

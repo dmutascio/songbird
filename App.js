@@ -67,7 +67,8 @@ export default function App() {
               {(props) => (
                 <SwiperScreen
                   {...props}
-                  onClose={setSwiperScreen}
+                  spotifyToken={spotifyToken}
+                  //onClose={setSwiperScreen}
                   selectedSong={selectedSongData}
                 />
               )}

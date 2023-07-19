@@ -1,7 +1,7 @@
 import axios from 'axios'
 const backendConnection = require('../config');
 
-async function devCall(spotifyToken, songId) {
+async function newModel(spotifyToken, songId) {
   try {
     const params = {
       userId: "1",
@@ -14,6 +14,7 @@ async function devCall(spotifyToken, songId) {
       }
     })
     const responseData = response.data;
+    console.log(responseData)
     return responseData
   }
   catch (error) {
@@ -21,4 +22,4 @@ async function devCall(spotifyToken, songId) {
   }
 }
 
-export { devCall };
+export { newModel };

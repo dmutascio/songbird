@@ -1,23 +1,37 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Text, View, PanResponder, Animated } from 'react-native';
 import { Card } from 'react-native-paper';
+import { trainModel } from '../apiCalls/trainModel'
 
-const SwiperScreen = ({ navigation, route, selectedSong }) => {
+const SwiperScreen = ({ navigation, route, spotifyToken, selectedSong }) => {
+  //let song = JSON.parse(selectedSong)["singleRecommendation"]
+  //console.log(songData)
+  let modelId = JSON.parse(selectedSong)["modelId"]
+  const [song, setSong] = React.useState(JSON.parse(selectedSong)["singleRecommendation"]);
   const [pan] = useState(new Animated.ValueXY());
   const [opacity] = useState(new Animated.Value(1));
-  let song = JSON.parse(selectedSong)
+  //let song = JSON.parse(selectedSong)
+  //console.log(song)
+
+  const handleSwipe = async (decision) => {
+    const newSong = await trainModel(spotifyToken, song, decision, modelId,);
+    setSong(JSON.parse(newSong)["singleRecommendation"]);
+  };
+
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
         useNativeDriver: false,
       }),
-      onPanResponderRelease: (_, gesture) => {
+      onPanResponderRelease: async (_, gesture) => {
         if (gesture.dx > 120) {
           // Swiped right
           console.log('Swiped right');
+          await handleSwipe(1);
         } else if (gesture.dx < -120) {
           // Swiped left
+          await handleSwipe(0);
           console.log('Swiped left');
         } else {
           // Reset card position
