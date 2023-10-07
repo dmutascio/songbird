@@ -2,6 +2,7 @@ import axios from 'axios'
 const backendConnection = require('../config');
 
 async function trainModel(spotifyToken, song, decision, modelId) {
+  //console.log("training model " + modelId + " with song " + song.id)
   try {
     const params = {
       userId: "1",
@@ -10,6 +11,7 @@ async function trainModel(spotifyToken, song, decision, modelId) {
       decision: decision,
       modelId: modelId
     };
+    console.log(params)
     const response = await axios.post(`${backendConnection}/trainModel`, params, {
       headers: {
         'Content-Type': 'application/json'

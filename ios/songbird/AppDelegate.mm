@@ -1,6 +1,7 @@
 #import "AppDelegate.h"
 
 #import <React/RCTBundleURLProvider.h>
+#import <React/RCTLinkingManager.h>
 
 @implementation AppDelegate
 
@@ -31,6 +32,16 @@
 - (BOOL)concurrentRootEnabled
 {
   return true;
+}
+
+- (BOOL) application: (UIApplication *)application
+             openURL: (NSURL *)url
+             options: (NSDictionary<UIApplicationOpenURLOptionsKey, id> *) options
+{
+  if ([self.authorizationFlowManagerDelegate resumeExternalUserAgentFlowWithURL:url]) {
+    return YES;
+  }
+  return [RCTLinkingManager application:application openURL:url options:options];
 }
 
 @end

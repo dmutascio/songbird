@@ -8,7 +8,7 @@ const SongModal = ({ song, token, setSwiperScreen, setSelectedSongData }) => {
   const artworkUrl = song['album']['images'][1]['url']
   const handleButton = async (token, song) => {
     const newSong = await newModel(token, song)
-    setSelectedSongData(JSON.stringify(newSong));
+    setSelectedSongData(newSong);
     setSwiperScreen(true);
   };
   return (
