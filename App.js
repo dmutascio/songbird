@@ -3,23 +3,19 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Provider as PaperProvider, MD3LightTheme as DefaultTheme, } from 'react-native-paper';
 import { Text } from 'react-native';
-import { HomeScreen } from './Pages/Home'
+import { HomeTabs } from './Tabs/HomeTabs'
 import { SwiperScreen } from './Pages/SwiperScreen'
-import { SettingsScreen } from './Pages/Settings'
-import { DiaryScreen } from './Pages/Diary'
 import { Login } from './Pages/Login'
 import getSpotifyToken from './assets/getSpotifyToken';
 import React, { useEffect, useState } from 'react';
-//Create Tab Navigator
-const Tab = createMaterialBottomTabNavigator();
+import { createStackNavigator } from '@react-navigation/stack';
+const Stack = createStackNavigator();
 
 
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(true)
   const [userId, setUserId] = useState('')
   const [spotifyToken, setSpotifyToken] = useState('');
-  const [swiperScreen, setSwiperScreen] = useState(false);
-  const [selectedSongData, setSelectedSongData] = useState('');
   const theme = {
     ...DefaultTheme,
     colors: {
@@ -50,56 +46,33 @@ export default function App() {
     <PaperProvider theme={theme}>
       {loggedIn ? (
         <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
-          <Tab.Navigator
-            activeColor="#9197AE"
-            inactiveColor="#273043"
-            barStyle={{ backgroundColor: '#F5F5F5' }}
-            indicatorStyle={{ backgroundColor: 'blue' }}
-            screenOptions={({ route }) => ({
-              tabBarIcon: ({ focused, color, size }) => {
-                let iconName;
-
-                if (route.name === 'Home') {
-                  iconName = focused
-                    ? 'ios-musical-note'
-                    : 'ios-musical-note-outline';
-                } else if (route.name === 'Settings') {
-                  iconName = focused ? 'ios-person' : 'ios-person-outline';
-                }
-                else if (route.name === 'Diary') {
-                  iconName = focused ? 'ios-calendar' : 'ios-calendar-outline';
-                }
-
-                // You can return any component that you like here!
-                return <Ionicons name={iconName} size={25} color={color} />;
-              },
-              tabBarLabel: false,
-            })}>
-            {swiperScreen ? (
-              <Tab.Screen name="Home">
+          <Stack.Navigator>
+            <Stack.Group>
+              <Stack.Screen
+                name="HomeTabs"
+                options={{ headerShown: false }}
+              >
+                {(props) => (
+                  <HomeTabs
+                    {...props}
+                    spotifyToken={spotifyToken}
+                  />
+                )}
+              </Stack.Screen>
+            </Stack.Group>
+            <Stack.Group screenOptions={{ presentation: 'modal' }}>
+              <Stack.Screen
+                name="Swipe"
+                options={{ headerShown: false }}>
                 {(props) => (
                   <SwiperScreen
                     {...props}
                     spotifyToken={spotifyToken}
-                    //onClose={setSwiperScreen}
-                    selectedSong={selectedSongData}
                   />
                 )}
-              </Tab.Screen>
-            ) : (
-              <Tab.Screen name="Home">
-                {(props) => (
-                  <HomeScreen
-                    {...props}
-                    spotifyToken={spotifyToken}
-                    setSwiperScreen={setSwiperScreen}
-                    setSelectedSongData={setSelectedSongData}
-                  />
-                )}
-              </Tab.Screen>
-            )}
-            <Tab.Screen name="Settings" component={SettingsScreen} />
-          </Tab.Navigator>
+              </Stack.Screen>
+            </Stack.Group>
+          </Stack.Navigator>
         </NavigationContainer>
       ) : (
         <Login setLogin={setLoggedIn} />

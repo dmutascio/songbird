@@ -1,5 +1,6 @@
 import { SafeAreaView, FlatList, View, StyleSheet } from 'react-native';
 import { TextInput, Modal, Portal, Provider, useTheme } from 'react-native-paper';
+import { BlurView } from "@react-native-community/blur";
 import React from 'react';
 import querySpotify from '../assets/querySpotify';
 import { SongComponent } from '../assets/songComponent';
@@ -7,20 +8,20 @@ import TrackPlayer from 'react-native-track-player';
 import { SongModal } from '../assets/songModal';
 
 
-const HomeScreen = ({ navigation, route, spotifyToken, setSwiperScreen, setSelectedSongData }) => {
+const HomeScreen = ({ navigation, spotifyToken }) => {
+  console.log("HOMESCREEN")
   const [songQuery, setSongQuery] = React.useState("");
   const [songs, setSongs] = React.useState([]);
   const [selectedSong, setSelectedSong] = React.useState(null);
   const [showPopup, setShowPopup] = React.useState(false);
   const theme = useTheme();
-
   const styles = StyleSheet.create({
     modalContainer: {
       flex: 1,
       shadowColor: "#273043",
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0,
-      shadowRadius: 4,
+      shadowRadius: 4
     },
     modalView: {
       //flex: 1,
@@ -29,10 +30,12 @@ const HomeScreen = ({ navigation, route, spotifyToken, setSwiperScreen, setSelec
       height: '100%',
       justifyContent: 'center',
       alignItems: 'center',
+
       //margin: 10,
     },
     flatListContainer: {
-      flex: 0.8,
+      paddingBottom: 100,
+      paddingTop: 10
     },
   });
 
@@ -107,12 +110,16 @@ const HomeScreen = ({ navigation, route, spotifyToken, setSwiperScreen, setSelec
           <Portal>
             <Modal visible={showPopup} onDismiss={togglePopup} contentContainerStyle={styles.modalContainer}>
               <View style={styles.modalView}>
-                <SongModal
-                  song={selectedSong}
-                  token={spotifyToken}
-                  setSwiperScreen={setSwiperScreen}
-                  setSelectedSongData={setSelectedSongData}
-                />
+                <BlurView
+                  blurType="light"
+                  blurAmount={10}
+                >
+                  <SongModal
+                    navigation={navigation}
+                    song={selectedSong}
+                    token={spotifyToken}
+                  />
+                </BlurView>
               </View>
             </Modal>
           </Portal>

@@ -1,15 +1,14 @@
 import { Text, View, Image, StyleSheet } from 'react-native';
 import { Modal, Button } from 'react-native-paper';
 import React from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { newModel } from '../apiCalls/newModel';
 
-const SongModal = ({ song, token, setSwiperScreen, setSelectedSongData }) => {
+const SongModal = ({ navigation, song, token }) => {
+  console.log("SONGMODAL")
   const artworkUrl = song['album']['images'][1]['url']
   const handleButton = async (token, song) => {
-    const newSong = await newModel(token, song)
-    setSelectedSongData(newSong);
-    setSwiperScreen(true);
+    navigation.navigate("Swipe", {
+      song: song
+    });
   };
   return (
     //<Modal.Content
@@ -88,5 +87,3 @@ const styles = StyleSheet.create({
     fontSize: 14,
   }
 });
-
-//      <Text>{song.name}</Text>

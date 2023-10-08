@@ -3,13 +3,15 @@ import { Text, View, PanResponder, Animated } from 'react-native';
 import { Card, Button } from 'react-native-paper';
 import { trainModel } from '../apiCalls/trainModel'
 import TrackPlayer from 'react-native-track-player';
+import { newModel } from '../apiCalls/newModel';
 import LinearGradient from 'react-native-linear-gradient';
 
 
-const SwiperScreen = ({ navigation, route, spotifyToken, selectedSong }) => {
-  let modelId = selectedSong["modelId"]
-  //const [song, setSong] = useState(null);
+const SwiperScreen = ({ navigation, route, spotifyToken }) => {
+  console.log("SWIPERSCREEN")
+  const [song, setSong] = useState(null);
   const songRef = useRef(null);
+  const modelId = useRef(null);
   const [pan] = useState(new Animated.ValueXY());
   const [opacity] = useState(new Animated.Value(1));
   const [isLoading, setIsLoading] = useState(true);
@@ -33,7 +35,7 @@ const SwiperScreen = ({ navigation, route, spotifyToken, selectedSong }) => {
     setIsLoading(true); // Set loading state to true when fetching new data
     await TrackPlayer.pause();
     await TrackPlayer.reset();
-    const newSong = await trainModel(spotifyToken, songRef.current, decision, modelId);
+    const newSong = await trainModel(spotifyToken, songRef.current, decision, modelId.current);
     //setSong(newSong["singleRecommendation"]);
     songRef.current = newSong["singleRecommendation"]
 
@@ -80,9 +82,14 @@ const SwiperScreen = ({ navigation, route, spotifyToken, selectedSong }) => {
   ).current;
 
   useEffect(() => {
-    //setSong(selectedSong["singleRecommendation"])
-    songRef.current = selectedSong["singleRecommendation"];
-    setIsLoading(false)
+    async function fetchData() {
+      //setSong(route.params.song)
+      const newSong = await newModel(spotifyToken, route.params.song)
+      songRef.current = newSong["singleRecommendation"];
+      modelId.current = newSong["modelId"]
+      setIsLoading(false)
+    }
+    fetchData();
   }, [])
 
   useEffect(() => {
@@ -131,7 +138,7 @@ const SwiperScreen = ({ navigation, route, spotifyToken, selectedSong }) => {
             },
           ]}
         >
-          <Card style={{ width: 300, height: 300, backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+          <Card style={{ width: 300, height: 300, backgroundColor: 'rgba(0, 0, 0, 0.2)', elevation: 4 }}>
             <Card.Content>
               <Text>{songRef.current && songRef.current.name}</Text>
               {/* Display any other relevant information */}
