@@ -1,6 +1,5 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Provider as PaperProvider, MD3LightTheme as DefaultTheme, } from 'react-native-paper';
 import { Text } from 'react-native';
 import { HomeTabs } from './Tabs/HomeTabs'

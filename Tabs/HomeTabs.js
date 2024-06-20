@@ -1,7 +1,7 @@
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { HomeScreen } from '../Pages/Home'
-import { SettingsScreen } from '../Pages/Settings'
+import { TestScreen } from '../Pages/Test'
 const Tab = createMaterialBottomTabNavigator();
 
 function HomeTabs({ navigation, route, spotifyToken }) {
@@ -19,7 +19,7 @@ function HomeTabs({ navigation, route, spotifyToken }) {
             iconName = focused
               ? 'ios-musical-note'
               : 'ios-musical-note-outline';
-          } else if (route.name === 'Settings') {
+          } else if (route.name === 'Test') {
             iconName = focused ? 'ios-person' : 'ios-person-outline';
           }
           return <Ionicons name={iconName} size={25} color={color} />;
@@ -35,7 +35,7 @@ function HomeTabs({ navigation, route, spotifyToken }) {
             />
           )}
         </Tab.Screen>
-        <Tab.Screen name="Settings" component={SettingsScreen} />
+        <Tab.Screen name="Test" component={TestScreen} />
       </Tab.Group>
     </Tab.Navigator>
   );
